@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
-import ProtectedPage from "../views/ProtectedPage";
+// import PetProfilePage from "../views/PetProfilePage";
 
 // Bring in bootstrap
 import Container from 'react-bootstrap/Container';
@@ -22,7 +22,7 @@ const Navigation = () => {
           {user ? (
             <>
               <Nav.Link href="/">Home</Nav.Link>
-              <Nav.Link href="/protected">ProtectedPage</Nav.Link>
+              <Nav.Link href="/petprofile">PetProfilePage</Nav.Link>
               <button onClick={logoutUser}>Logout</button>
             </>
           ) : (
@@ -40,26 +40,3 @@ const Navigation = () => {
 };
 
 export default Navigation;
-
-
-
-
-{/* <nav>
-<div>
-  <h1>JWT-React-Django App</h1>
-  <div>
-    {user ? (
-      <>
-        <Link to="/">Home</Link>
-        <Link to="/protected">ProtectedPage</Link>
-        <button onClick={logoutUser}>Logout</button>
-      </>
-    ) : (
-      <>
-        <Nav.Link href="/login">Login</Nav.Link>
-        <Nav.Link href="/register">Register</Nav.Link>
-      </>
-    )}
-  </div>
-</div>
-</nav> */}

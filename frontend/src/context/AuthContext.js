@@ -1,6 +1,8 @@
 import { createContext, useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { Nav } from "react-bootstrap";
 
 const AuthContext = createContext();
 
@@ -57,7 +59,7 @@ export const AuthProvider = ({ children }) => {
       })
     });
     if (response.status === 201) {
-      history.push("/login");
+      Navigate("/login");
     } else {
       alert("Something went wrong!");
     }
@@ -67,7 +69,7 @@ export const AuthProvider = ({ children }) => {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
-    history.push("/");
+    Navigate("/");
   };
 
   const contextData = {
