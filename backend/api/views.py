@@ -28,7 +28,7 @@ def getRoutes(request):
         '/api/token/',
         '/api/register/',
         '/api/token/refresh/',
-        '/api/petprofile',
+        '/api/petprofile/',
     ]
     return Response(routes)
 
@@ -45,41 +45,33 @@ def testEndPoint(request):
     return Response({}, status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'PUT'])
 @permission_classes([IsAuthenticated])
 def getPetProfile(request):
     
         try:
             if request.method == 'GET':
-                user = request.user
-                
-                # data = f'{PetProfile.objects.filter(user=user)}'
-                # data = [
-                #     {'pet_name': PetProfile.objects.get(user=user).pet_name,
-                #      'pet_type': PetProfile.objects.get(user=user).pet_type}
-                # ]
 
-                data = PetProfile.objects.get(user=user)
+                data = PetProfile.objects.get(user=request.user)
                 serializer = PetProfileSerializer(data)
 
-                print(data)
-
                 return Response({'response': serializer.data}, status.HTTP_200_OK)
-        except:
-            return Response({}, status.HTTP_400_BAD_REQUEST)
-        
- 
-# @api_view(['PUT'])
-# @permission_classes([IsAuthenticated])
-# def getPetProfile(request):
-#     try:
-#         if request.method == 'PUT':
             
-#             user = request.user
-#             petProfile = PetProfile.objects.filter(user=user)
-#             serializer = PetProfileSerializer
+            elif request.method == 'PUT':
+                
 
+                print(request.data)
 
-#     except:
-#         return Response({}, status.HTTP_400_BAD_REQUEST)
+                #Fetch user pet profile from db
+                data = PetProfile.objects.get(user=request.user)
+                
+                #Update values and save
+                data.pet_name = request.data['pet_name']
+                data.pet_type = request.data['pet_type']
+                data.save()
+                
+                return Response({}, status.HTTP_200_OK)
 
+        except:
+        
+            return Response({}, status.HTTP_400_BAD_REQUEST)
