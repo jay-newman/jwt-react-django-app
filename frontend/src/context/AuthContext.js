@@ -62,12 +62,14 @@ export const AuthProvider = ({ children }) => {
       alert("Something went wrong!");
     }
   };
-
+// Need logout to redirect home or something. 
   const logoutUser = () => {
+    // const nav = Navigate();
+
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
-    Navigate("/");
+    // nav("/");
   };
 
   const contextData = {

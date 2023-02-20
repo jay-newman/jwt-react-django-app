@@ -1,7 +1,7 @@
 
 from django.shortcuts import render
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, serializers
 from django.http import JsonResponse
 from api.serializer import MyTokenObtainPairSerializer, RegisterSerializer, PetProfileSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -10,6 +10,8 @@ from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from api.models import PetProfile
+
+MaxPets = 3
 
 # Create your views here.
 
@@ -45,17 +47,38 @@ def testEndPoint(request):
     return Response({}, status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'PUT'])
+@api_view(['GET', 'PUT', 'POST'])
 @permission_classes([IsAuthenticated])
 def getPetProfile(request):
+        
     
         try:
             if request.method == 'GET':
-
+                
                 data = PetProfile.objects.get(user=request.user)
+                # print(data)
                 serializer = PetProfileSerializer(data)
+                
 
                 return Response({'response': serializer.data}, status.HTTP_200_OK)
+            # Create new pet object
+            elif request.method == 'POST':
+
+                if MaxPets < 3:
+
+                    newData = PetProfileSerializer(data=request.method.data)
+                    if newData.objects.filter(**request.data).exists():
+                        raise serializers.ValidationError('This data already exists')
+            
+                    if newData.is_valid():
+                        print("newData is valid")
+                        # newData.save()
+                        # return Response(newData.data)
+                    else:
+                     return Response(status=status.HTTP_404_NOT_FOUND)
+                    
+                return Response({} ,status.HTTP_200_OK)
+        
             
             elif request.method == 'PUT':
                 
@@ -75,6 +98,7 @@ def getPetProfile(request):
                 serializer = PetProfileSerializer(data)
                 
                 return Response({'response': serializer.data}, status.HTTP_200_OK)
+            
 
         except:
         
