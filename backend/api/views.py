@@ -52,24 +52,34 @@ def getPetProfile(request):
         try:
             if request.method == 'GET':
                 user = request.user
-                serializerClass = PetProfileSerializer
-                pet_name = f'{PetProfile.objects.get(user=user).pet_name}'
-                pet_type = f'{PetProfile.objects.get(user=user).pet_type}'
-
-
                 
-                data = f'{PetProfile.objects.filter(user=user)}'
-                data = [
-                    {'pet_name': PetProfile.objects.get(user=user).pet_name,
-                     'pet_type': PetProfile.objects.get(user=user).pet_type}
-                ]
+                # data = f'{PetProfile.objects.filter(user=user)}'
+                # data = [
+                #     {'pet_name': PetProfile.objects.get(user=user).pet_name,
+                #      'pet_type': PetProfile.objects.get(user=user).pet_type}
+                # ]
+
+                data = PetProfile.objects.get(user=user)
+                serializer = PetProfileSerializer(data)
+
                 print(data)
 
-                # return JsonResponse(serializerClass(data), safe=False)
-                
-                return Response({'response': data}, status=status.HTTP_200_OK)
-
+                return Response({'response': serializer.data}, status.HTTP_200_OK)
         except:
             return Response({}, status.HTTP_400_BAD_REQUEST)
-            # return Response({ 'error': 'Something went wrong when trying get pet profiles' })
         
+ 
+# @api_view(['PUT'])
+# @permission_classes([IsAuthenticated])
+# def getPetProfile(request):
+#     try:
+#         if request.method == 'PUT':
+            
+#             user = request.user
+#             petProfile = PetProfile.objects.filter(user=user)
+#             serializer = PetProfileSerializer
+
+
+#     except:
+#         return Response({}, status.HTTP_400_BAD_REQUEST)
+

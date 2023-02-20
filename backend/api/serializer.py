@@ -42,6 +42,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
     
 class PetProfileSerializer(serializers.ModelSerializer):
-      class Meta:
+    class Meta:
         model = PetProfile
-        fields = ('pet_name', 'pet_type')
+        fields = '__all__'
+    
