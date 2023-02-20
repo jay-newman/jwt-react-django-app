@@ -18,9 +18,21 @@ function PetProfilePage() {
       pet_type: e.target.pet_type.value
     };
 
-    api.put('/petprofile/', JSON.stringify(data));
+    updateResponse(data);
+
   
   };
+
+  let updateResponse = async (data) => {
+    try {
+      let response = await api.put('/petprofile/', JSON.stringify(data));
+      console.log(response.data.response);
+      setRes(response.data.response);
+    } catch {
+      setRes("Something went wrong");
+    }
+
+  }  
 
   useEffect(() => {
     let fetchData = async () => {

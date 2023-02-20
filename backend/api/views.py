@@ -60,7 +60,7 @@ def getPetProfile(request):
             elif request.method == 'PUT':
                 
 
-                print(request.data)
+                # print(request.data)
 
                 #Fetch user pet profile from db
                 data = PetProfile.objects.get(user=request.user)
@@ -69,8 +69,12 @@ def getPetProfile(request):
                 data.pet_name = request.data['pet_name']
                 data.pet_type = request.data['pet_type']
                 data.save()
+
+                #Get new info
+                data = PetProfile.objects.get(user=request.user)
+                serializer = PetProfileSerializer(data)
                 
-                return Response({}, status.HTTP_200_OK)
+                return Response({'response': serializer.data}, status.HTTP_200_OK)
 
         except:
         
