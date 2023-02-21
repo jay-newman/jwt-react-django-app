@@ -9,7 +9,9 @@ from rest_framework import generics
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
-from api.models import PetProfile
+from api.models import PetProfile  
+from rest_framework.renderers import JSONRenderer
+
 
 MaxPets = 3
 
@@ -55,31 +57,32 @@ def getPetProfile(request):
         try:
             if request.method == 'GET':
                 
-                data = PetProfile.objects.get(user=request.user)
-                # print(data)
-                serializer = PetProfileSerializer(data)
+                petProfiles = PetProfile.objects.filter(user=request.user)
+                serializer = PetProfileSerializer(petProfiles, many=True)
+
+                json = JSONRenderer().render(serializer.data)
                 
 
-                return Response({'response': serializer.data}, status.HTTP_200_OK)
+                return Response({'response': {json}}, status.HTTP_200_OK)
             # Create new pet object
             elif request.method == 'POST':
 
-                if MaxPets < 3:
+                print("in post pets")
+                # User can have a max of three pets
+                if PetProfile.objects.filter(user=request.user).count() <= MaxPets:
+                    # Create New Pet
+                    # Probably should add some validation here or something
+                    petProfiles = PetProfile.objects.filter(user=request.user)
+                    print(petProfiles)
+                    serializer = PetProfileSerializer(petProfiles, many=True)
 
-                    newData = PetProfileSerializer(data=request.method.data)
-                    if newData.objects.filter(**request.data).exists():
-                        raise serializers.ValidationError('This data already exists')
+                    json = JSONRenderer().render(serializer.data)
+                
+                
             
-                    if newData.is_valid():
-                        print("newData is valid")
-                        # newData.save()
-                        # return Response(newData.data)
-                    else:
-                     return Response(status=status.HTTP_404_NOT_FOUND)
                     
-                return Response({} ,status.HTTP_200_OK)
-        
-            
+                    return Response({'response': {json}} ,status.HTTP_200_OK)
+      
             elif request.method == 'PUT':
                 
 

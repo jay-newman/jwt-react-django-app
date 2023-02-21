@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useAxios from "../utils/useAxios";
+import { Fragment } from "react";
 
 
 function PetProfilePage() {
@@ -41,7 +42,7 @@ function PetProfilePage() {
     try {
       let response = await api.post('/petprofile/', JSON.stringify(data));
       console.log(response.data.response);
-      // setRes(response.data.response);
+      setRes(response.data.response);
     } catch {
       setRes("Something went wrong");
     }
@@ -76,17 +77,31 @@ function PetProfilePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   return (
     <div>
       <h1>Pet Profile Page</h1>
       <br></br>
       <ul>
         <h2>Pet Info</h2>
-        {[res].map((r, id) => (
+        {/* {[res].map((r, id) => (
           <h6 key={id}> Pet Name: {r.pet_name}<br></br>Pet Type: {r.pet_type} </h6>
-        ))}
+        ))} */}
+    
+        {/* <div>
+        {[res].map(function(d, idx){
+          return (<li key={idx}>{d.pet_name}</li>)
+        })}
+        </div> */}
+        
+        <ul>
+          {res.map(item =>
+          <li key="{item}">{item}</li>
+          )}
+        </ul>
+        
 
+    
+  
       </ul>
 
       <section>
