@@ -1,12 +1,29 @@
 import { useEffect, useState } from "react";
 import useAxios from "../utils/useAxios";
-import { Fragment } from "react";
-
+import petProfileList from "../components/ListProfiles";
 
 function PetProfilePage() {
   
-  let [ res , setRes]=useState([]);
+  // let [ profileList , setProfilelist]=useState([
+  //   {
+  //     id: "",
+  //     user_id: "",
+  //     pet_name: "",
+  //     pet_type: "",
+     
+  //   }
+  // ]);
+  let [ profileList, setProfilelist] = useState([]);
   let api = useAxios();
+
+
+  let profileObj = {
+    id: "",
+    user_id: "",
+    pet_name: "",
+    pet_type: "",
+   
+  }
 
   
   
@@ -41,10 +58,11 @@ function PetProfilePage() {
   let createResponse = async (data) => {
     try {
       let response = await api.post('/petprofile/', JSON.stringify(data));
-      console.log(response.data.response);
-      setRes(response.data.response);
+      // console.log(response.data.response);
+      setProfilelist(response.data.response);
+      console.log(profileList);
     } catch {
-      setRes("Something went wrong");
+      setProfilelist("Something went wrong");
     }
 
   }  
@@ -55,9 +73,9 @@ function PetProfilePage() {
     try {
       let response = await api.put('/petprofile/', JSON.stringify(data));
       console.log(response.data.response);
-      setRes(response.data.response);
+      setProfilelist(response.data.response);
     } catch {
-      setRes("Something went wrong");
+      setProfilelist("Something went wrong");
     }
 
   }  
@@ -66,43 +84,116 @@ function PetProfilePage() {
     let fetchData = async () => {
       try {
         let response = await api.get("/petprofile/");
-        console.log("Line 68");
-        console.log(response.data.response);
-        setRes(response.data.response);
+        // var finalData = str.replace(/\\/g, "");
+        let newData = JSON.parse(response.data.response);
+        // setProfilelist(JSON.stringify(newData));
+        setProfilelist(newData);
+
+        console.log(profileList);
       } catch {
-        setRes("Something went wrong");
+        setProfilelist("Something went wrong");
       }
     };
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function getPetList (petlist) {
+    const profileObj = JSON.parse(petlist)
+    return profileObj
+  }
+
+  // function petProfiles({ res }) {
+  // return (
+  //   <div>
+  //     { res.map((user, i) => {
+  //       return (
+  //         <div key={i} class="user-card">
+  //           <h2>{user.pet_name}</h2>
+  //           <p>{user.pet_type}</p>
+  //           {/* <img src={`/img/users/${user.image}`} width="50" height="50" /> */}
+  //         </div>
+  //       );
+  //     }) }
+  //   </div>
+  // );
+  // }; 
+  // function listPetProfiles({ petList }) {
+  //   return (
+  //     <div>
+  //       {petList.map(petprofile => {
+  //         const { key, pet_name, pet_type } = petprofile;
+  //         return <PetProfile key={key} pet_name={pet_name} pet_type={pet_type} />
+  //       })}
+  //     </div>
+  //    );
+  //}
+
+  // Accepts an object - returns some JSX to be rendered
+  // function PetProfile({ pet_name, pet_type }) {
+  //   return (
+  //     <div>
+  //       <p>{pet_name}</p>
+  //       <p>{pet_type}</p>
+  //     </div>
+  //   );
+  // }
+
+  // const petProfileList = res.map(profile => 
+  //   <PetProfile> key={profile.id} profile={profile}</PetProfile>
+  // ) 
+
+
+
+
+
   return (
     <div>
       <h1>Pet Profile Page</h1>
       <br></br>
-      <ul>
+      {/* <ul> */}
         <h2>Pet Info</h2>
-        {/* {[res].map((r, id) => (
-          <h6 key={id}> Pet Name: {r.pet_name}<br></br>Pet Type: {r.pet_type} </h6>
-        ))} */}
-    
-        {/* <div>
-        {[res].map(function(d, idx){
-          return (<li key={idx}>{d.pet_name}</li>)
-        })}
-        </div> */}
+        {/* {JSON.stringify(profileList)} */}
+        {/* {profileList} */}
         
-        <ul>
-          {res.map(item =>
-          <li key="{item}">{item}</li>
-          )}
-        </ul>
-        
+        <div>
+
+          {/* {JSON.parse(profileList)} */}
+
+
+        </div>
+        <>
+
+      <div className="stock-container">
+
+        {profileList.map((data, key) => {
+
+          return (
+
+            <div key={key}>
+
+              {data.pet_name +
+
+                " , " +
+
+                data.pet_type +
+
+                " ," +
+                key
+
+                }
+
+            </div>
+
+              );
+
+            })}
+
+          </div>
+
+        </>
 
     
-  
-      </ul>
 
       <section>
         <form onSubmit={handleSubmit}>

@@ -10,3 +10,6 @@ class PetProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pet_name = models.CharField(max_length=20, default='nameless')
     pet_type = models.CharField(max_length=20, default='unknown')
+
+    def __str__(self):
+        return self.pet_name 
