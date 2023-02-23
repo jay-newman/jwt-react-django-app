@@ -97,21 +97,48 @@ def getPetProfile(request):
             elif request.method == 'PUT':
                 
 
-                # print(request.data)
+                print(request.data)
 
                 #Fetch user pet profile from db
-                data = PetProfile.objects.get(user=request.user)
+                # data = list(PetProfile.objects.filter(user=request.user, pet_name=request.data['pet_oldName']).values())
+                data = (PetProfile.objects.filter(user=request.user, pet_name=request.data['pet_oldName']))
+
+                print(data)
                 
                 #Update values and save
-                data.pet_name = request.data['pet_name']
-                data.pet_type = request.data['pet_type']
-                data.save()
+                data.update(pet_name=request.data['pet_name'], pet_type=request.data['pet_type'])
+               
+                # data.pet_name = request.data['pet_name']
+                # data.pet_type = request.data['pet_type']
+                # data.save()
 
-                #Get new info
-                data = PetProfile.objects.get(user=request.user)
-                serializer = PetProfileSerializer(data)
+                # #Get new info
+                print("New info line 112")
+                # data = list(PetProfile.objects.filter(user=request.user).values())
+                # # print(data)
+                # serializer = PetProfileSerializer(data)
+
+                # json = JSONRenderer().render(serializer.data, many=True)
+                profileList = list(PetProfile.objects.filter(user=request.user).values())
+
+
+                print(profileList)
+                serializer = PetProfileSerializer(profileList, many=True)  
+
+                # print("Profile List")
+                # print(profileList)
+
                 
-                return Response({'response': serializer.data}, status.HTTP_201_OK)
+     
+    
+
+
+                json = JSONRenderer().render(serializer.data)
+
+                
+                return Response({'response': {json}}, status.HTTP_200_OK)
+                # return Response({ }, status.HTTP_201_OK)
+
             
 
         except:
