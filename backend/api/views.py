@@ -57,32 +57,23 @@ def getPetProfile(request):
         try:
             if request.method == 'GET':
                 
-                # profileList = PetProfile.objects.filter(user=request.user).values()
                 profileList = list(PetProfile.objects.filter(user=request.user).values())
 
-
-                print(profileList)
                 serializer = PetProfileSerializer(profileList, many=True)  
-                # print("Profile List")
-                # print(profileList)
-
-                
-     
-    
-
 
                 json = JSONRenderer().render(serializer.data)
                 
                 return Response({'response': {json}}, status.HTTP_200_OK)
 
-                # return Response({"response": {profile['id']: profile for profile in serializer.data}})
-                # return JsonResponse({"profile": profileList}, safe=False, status=status.HTTP_200_OK)
+                
             # Create new pet object
-            elif request.method == 'POST':
+            if request.method == 'POST':
 
                 print("in post pets")
                 # User can have a max of three pets
-                if PetProfile.objects.filter(user=request.user).count() <= MaxPets:
+                if PetProfile.objects.filter(user=request.user).count() < MaxPets:
+                    print(request.user)
+
                     # Create New Pet
                     # Probably should add some validation here or something
                     petProfiles = PetProfile.objects.filter(user=request.user)
@@ -93,14 +84,18 @@ def getPetProfile(request):
                 
                     
                     return Response({'response': {json}} ,status.HTTP_200_OK)
+                 
+                print("Too many pets")
+                return Response({'response': {}} ,status.HTTP_400_BAD_REQUEST)
+
+                
       
-            elif request.method == 'PUT':
+            if request.method == 'PUT':
                 
 
                 print(request.data)
 
-                #Fetch user pet profile from db
-                # data = list(PetProfile.objects.filter(user=request.user, pet_name=request.data['pet_oldName']).values())
+                # Fetch user pet profile from db
                 data = (PetProfile.objects.filter(user=request.user, pet_name=request.data['pet_oldName']))
 
                 print(data)
@@ -108,54 +103,15 @@ def getPetProfile(request):
                 #Update values and save
                 data.update(pet_name=request.data['pet_name'], pet_type=request.data['pet_type'])
                
-                # data.pet_name = request.data['pet_name']
-                # data.pet_type = request.data['pet_type']
-                # data.save()
-
-                # #Get new info
-                print("New info line 112")
-                # data = list(PetProfile.objects.filter(user=request.user).values())
-                # # print(data)
-                # serializer = PetProfileSerializer(data)
-
-                # json = JSONRenderer().render(serializer.data, many=True)
+                # Send updated info
                 profileList = list(PetProfile.objects.filter(user=request.user).values())
 
-
-                print(profileList)
                 serializer = PetProfileSerializer(profileList, many=True)  
-
-                # print("Profile List")
-                # print(profileList)
-
-                
-     
-    
-
 
                 json = JSONRenderer().render(serializer.data)
 
-                
                 return Response({'response': {json}}, status.HTTP_200_OK)
-                # return Response({ }, status.HTTP_201_OK)
-
             
-
         except:
         
             return Response({}, status.HTTP_400_BAD_REQUEST)
-        
-def get_json_list(query_set):
-    list_objects = []
-    for obj in query_set:
-        dict_obj = {}
-        for field in obj._meta.get_fields():
-            try:
-                if field.many_to_many:
-                    dict_obj[field.name] = get_json_list(getattr(obj, field.name).all())
-                    continue
-                dict_obj[field.name] = getattr(obj, field.name)
-            except AttributeError:
-                continue
-        list_objects.append(dict_obj)
-    return list_objects

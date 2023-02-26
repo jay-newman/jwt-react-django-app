@@ -1,20 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import useAxios from "../utils/useAxios";
-import petProfileList from "../components/ListProfiles";
+import AuthContext from "../context/AuthContext";
+import UserInfo from "../components/UserInfo";
+
+
 
 function PetProfilePage() {
   
   let [ profileList, setProfilelist] = useState([]);
   let api = useAxios();
-
-
-  let profileObj = {
-    id: "",
-    user_id: "",
-    pet_name: "",
-    pet_type: "",
-   
-  }
+  const { user } = useContext(AuthContext);
 
   
   
@@ -80,11 +75,12 @@ function PetProfilePage() {
       try {
         let response = await api.get("/petprofile/");
         // var finalData = str.replace(/\\/g, "");
+        console.log(response.data.response);
         let newData = JSON.parse(response.data.response);
         // setProfilelist(JSON.stringify(newData));
         setProfilelist(newData);
 
-        console.log(profileList);
+        console.log(newData);
       } catch {
         setProfilelist("Something went wrong");
       }
@@ -103,7 +99,8 @@ function PetProfilePage() {
       <h1>Pet Profile Page</h1>
       <br></br>
       {/* <ul> */}
-        <h2>Pet Info</h2>
+        {user && <UserInfo user={user} />}
+        <h2> Pet Info</h2>
         {/* {JSON.stringify(profileList)} */}
         {/* {profileList} */}
         
@@ -113,35 +110,24 @@ function PetProfilePage() {
 
 
         </div>
+
         <>
+          <div className="petProfile-container">
 
-      <div className="stock-container">
-
-        {profileList.map((data, key) => {
-
-          return (
-
-            <div key={key}>
-
-              {data.pet_name +
-
-                " , " +
-
-                data.pet_type +
-
-                " ," +
-                key
-
-                }
-
-            </div>
-
-              );
-
-            })}
-
+            {profileList.map((data, key) => {
+              return (
+                <div key={key}>
+                  {data.pet_name +
+                    " , " +
+                    data.pet_type +
+                    " ," +
+                    key +
+                    data.id
+                    }
+                </div>
+                  );
+                })}
           </div>
-
         </>
 
     

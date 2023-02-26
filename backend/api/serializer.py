@@ -41,15 +41,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         return user
     
-# class PetProfileSerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         model = PetProfile
-#         fields = '__all__'
-
+    
 class PetProfileSerializer(serializers.Serializer):
     pet_name = serializers.CharField(max_length=20)
     pet_type = serializers.CharField(max_length=20)
+
     class Meta:
         model = PetProfile
         fields = '__all__'
