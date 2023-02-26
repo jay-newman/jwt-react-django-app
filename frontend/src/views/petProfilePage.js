@@ -101,15 +101,6 @@ function PetProfilePage() {
       {/* <ul> */}
         {user && <UserInfo user={user} />}
         <h2> Pet Info</h2>
-        {/* {JSON.stringify(profileList)} */}
-        {/* {profileList} */}
-        
-        <div>
-
-          {/* {JSON.parse(profileList)} */}
-
-
-        </div>
 
         <>
           <div className="petProfile-container">
